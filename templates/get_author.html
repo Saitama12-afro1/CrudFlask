@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+<a href = "/">Home</a>
+<form  method = "POST" name = "getAuthor">
+    <p><input type ="text" name ="author" placeholder="ФИО автора"></p>
+    <p><input type="submit" value="Отправить"> <input type="reset" value="Очистить"></p>
+</form>
+{% if all_author_books|length >= 1 %}
+    {% for el in all_author_books %}
+    <h2>{{shema.dump(el)}}</h2>
+    {% endfor %}
+{% else %}
+    <h2>Инофрмации нет </h2>
+{% endif %}
+{% endblock body %}

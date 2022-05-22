@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+<a href = "/create">Добавить книгу</a>
+<a href = "/getAuthor">Поиск по автору</a>
+<a href = "/getBook">Поиск по книге</a>
+{% if books %}
+    {% for el in books %}
+        <h2>{{shema.dump(el)}}</h2>
+        <a href ='/upg/{{el.id_book}}'>Изменить</a>
+        <a href = '/del/{{el.id_book}}'>Удалить</a>
+    {% endfor %}
+{% else %}
+    <h2>Книг еще нет</h2>
+{% endif %}
+{% endblock body %}
