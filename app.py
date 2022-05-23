@@ -1,8 +1,10 @@
+from email import message
+from traceback import print_tb
 from flask_migrate import  Migrate
 from flask import Flask
 from instance.config import Config
 from models import db
-from flask import render_template, request, redirect, abort
+from flask import render_template, request, redirect, abort, jsonify
 from models import Book
 from add_book import add_book
 from validation_data import validation_data
@@ -35,7 +37,7 @@ def get_author():
         author = request.form['author']
         a = validation_data(author, None)
         if a == False:
-            abort(502)
+            abort(500, description = ["getAuthor_error"])
         all_author_books =  Book.query.filter_by(author = author).all()
     return render_template('get_author.html', all_author_books = all_author_books, shema= shema)
 
@@ -48,7 +50,7 @@ def get_book():
         title = request.form['title']
         a = validation_data(title, None)    
         if a == False:
-            abort(503)
+            abort(500, description = ["getBook_error"])
         book =  Book.query.filter_by(title = title).all()
 
     return render_template('get_book.html', book = book, shema= shema)
@@ -61,7 +63,7 @@ def create():
         title = request.form['title'] 
         a = validation_data(author, title)
         if a == False:
-            abort(500)
+            abort(500, description = ["create_error"])
         add_book(author=author, title=title)
 
               
@@ -75,7 +77,7 @@ def upg(id):
         title = request.form['title']
         author = request.form['author']
         if validation_data(author, title) == False:
-            abort(501)#написать отдельную ошибку для возврата на страницу апргрейда
+            abort(500, description = ["upd_error",id])
         book.title = title
         book.author = author
         db.session.commit()
@@ -84,7 +86,6 @@ def upg(id):
 
 @app.route('/del/<int:id>')
 def delite(id):
-    print("-----------")
     book = Book.query.get_or_404(id)
     try:
         db.session.delete(book)
@@ -97,8 +98,9 @@ def delite(id):
 
 @app.errorhandler(500)
 def iternal_error(error):
+    print(error.description)
     db.session.rollback()
-    return render_template("500er.html"), 500
+    return render_template("500er.html", props = error.description), 500
 
 
 @app.errorhandler(404)
@@ -106,22 +108,6 @@ def iternal_error(error):
     db.session.rollback()
     return render_template("500er.html"), 500
 
-
-@app.errorhandler(501)
-def iternal_error(error):
-    db.session.rollback()
-    return render_template("501er.html"), 501
-
-
-@app.errorhandler(502)
-def iternal_error(error):
-    db.session.rollback()
-    return render_template("502er.html"), 502
-
-@app.errorhandler(503)
-def iternal_error(error):
-    db.session.rollback()
-    return render_template("503er.html"), 503
     
 if __name__ == "__main__":
     app.run(debug=True)

@@ -5,7 +5,17 @@
 {% endblock %}
 
 {% block body %}
-<h1>{{args}}</h1>
-<h1>Введены некорректные данные</h1>
-<a href ="/create">Назад</a>
+{% if props[0] == "create_error" %}
+    <h1>Введены некорректные данные</h1>
+    <a href ="/create">Назад</a>
+{% elif props[0] == "upd_error" %}
+    <h1>Введены некорректные данные</h1>
+    <a href ="/upg/{{props[1]}}">Назад</a>
+{% elif props[0] == "getBook_error" %}
+    <h1>Введены некорректные данные</h1>
+    <a href ="/getBook">Назад</a>
+{% elif props[0] == "getAuthor_error" %}
+    <h1>Введены некорректные данные</h1>
+    <a href ="/getAuthor">Назад</a>
+{% endif %}
 {% endblock body %}
