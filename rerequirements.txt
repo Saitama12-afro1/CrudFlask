@@ -1,0 +1,8 @@
+sqlalchemy
+flask
+flask_sqlalchemy
+flask_migrate
+psycopg2
+requests
+pytest
+marshmallow

@@ -1,10 +1,8 @@
-from email import message
-from traceback import print_tb
 from flask_migrate import  Migrate
 from flask import Flask
 from instance.config import Config
 from models import db
-from flask import render_template, request, redirect, abort, jsonify
+from flask import render_template, request, redirect, abort
 from models import Book
 from add_book import add_book
 from validation_data import validation_data
