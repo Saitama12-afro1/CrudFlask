@@ -98,7 +98,6 @@ def delite(id):
 
 @app.errorhandler(500)
 def iternal_error(error):
-    print(error.description)
     db.session.rollback()
     return render_template("500er.html", props = error.description), 500
 
@@ -106,7 +105,7 @@ def iternal_error(error):
 @app.errorhandler(404)
 def iternal_error(error):
     db.session.rollback()
-    return render_template("500er.html"), 500
+    return render_template("404er.html"), 404
 
     
 if __name__ == "__main__":
