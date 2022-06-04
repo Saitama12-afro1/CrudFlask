@@ -11,7 +11,3 @@ def validation_data(data1:str, data2:str) ->bool:
         if len(data1) >= 100:
             return False
         return True
-
-
-
-    
