@@ -11,7 +11,9 @@
 </form>
 {% if book|length >= 1 %}
     {% for el in book %}
+
     <h2>{{shema.dump(el)}}</h2>
+
     {% endfor %}
 {% else %}
     <h2>Инофрмации нет </h2>

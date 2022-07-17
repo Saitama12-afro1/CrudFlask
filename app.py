@@ -3,11 +3,11 @@ from flask import Flask
 from instance.config import Config
 from models import db
 from flask import render_template, request, redirect, abort
-from models import Book
+from models import  Books, Author, association_book_author
 from add_book import add_book
 from validation_data import validation_data
 from serializing import MyShema
-
+from BookAuthor import BookAuthor, ListAuthorBook
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object(Config)
@@ -21,10 +21,11 @@ def create_table():
 
 @app.route('/')
 def index():
-    books = Book.query.order_by(Book.author).all()
-    a = Book.query.order_by(Book.id_book).all()
+    author = Author.query.all()
+    list_author_book = ListAuthorBook()
+    a = list_author_book.all_list_add(author)
     shema = MyShema()
-    return render_template("index.html",books=books, shema = shema)
+    return render_template("index.html",books=a, shema = shema)
 
 
 @app.route('/getAuthor', methods=["POST","GET"])
@@ -36,7 +37,9 @@ def get_author():
         a = validation_data(author, None)
         if a == False:
             abort(500, description = ["getAuthor_error"])
-        all_author_books =  Book.query.filter_by(author = author).all()
+        all_author_books =  Author.query.filter_by(author = author).all()
+        list_author_book = ListAuthorBook()
+        all_author_books = list_author_book.all_list_add(all_author_books)
     return render_template('get_author.html', all_author_books = all_author_books, shema= shema)
 
 
@@ -49,7 +52,9 @@ def get_book():
         a = validation_data(title, None)    
         if a == False:
             abort(500, description = ["getBook_error"])
-        book =  Book.query.filter_by(title = title).all()
+        book =  Books.query.filter_by(title = title).all()
+        list_author_book = ListAuthorBook()
+        book = list_author_book.all_list_add_book(book)
 
     return render_template('get_book.html', book = book, shema= shema)
 
@@ -68,28 +73,35 @@ def create():
     return render_template("create.html")
 
 
-@app.route('/upg/<int:id>', methods = ["POST", "GET"])
-def upg(id):
-    book = Book.query.get(id)
+@app.route('/upg/<int:id>/<int:id_a>', methods = ["POST", "GET"])
+def upg(id, id_a):
+    book = Books.query.get(id)
+    auth = Author.query.get(id_a)
     if request.method == "POST":
         title = request.form['title']
         author = request.form['author']
         if validation_data(author, title) == False:
             abort(500, description = ["upd_error",id])
         book.title = title
-        book.author = author
+        auth.author = author
         db.session.commit()
-    return render_template("book_upd.html", book=book)
+    return render_template("book_upd.html", book=book, author=auth)
 
 
-@app.route('/del/<int:id>')
-def delite(id):
-    book = Book.query.get_or_404(id)
+@app.route('/del/<int:id>/<int:id_a>')
+def delite(id, id_a):
+    book = Books.query.get_or_404(id)
+    author = Author.query.get(id_a)
+    print(len(author.books))
     try:
+        print(11111111)
         db.session.delete(book)
+        if len(author.books) == 1:
+            db.session.delete(author)
         db.session.commit()
         return redirect("/")
     except:
+        print(22222222)
         db.session.rollback()
         abort(404)
  

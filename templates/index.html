@@ -10,8 +10,8 @@
 {% if books %}
     {% for el in books %}
         <h2>{{shema.dump(el)}}</h2>
-        <a href ='/upg/{{el.id_book}}'>Изменить</a>
-        <a href = '/del/{{el.id_book}}'>Удалить</a>
+        <a href ='/upg/{{el.id_book}}/{{el.id_author}}'>Изменить</a>
+        <a href = '/del/{{el.id_book}}/{{el.id_author}}'>Удалить</a>
     {% endfor %}
 {% else %}
     <h2>Книг еще нет</h2>

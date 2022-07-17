@@ -5,9 +5,9 @@
 
 {% block body %}
 <a href="/">Home</a>
-{{book}}
+{{author.author}} {{book.title}}
 <form  method = "POST" name = "updBook">
-    <p><input type ="text" name ="author" value = "{{book.author}}" size = "50" placeholder="ФИО автора"></p>
+    <p><input type ="text" name ="author" value = "{{author.author}}" size = "50" placeholder="ФИО автора"></p>
     <p><input type ="text" name ="title" value = "{{book.title}}"
         size = "50" placeholder="Название книги"></p>
     <p><input type="submit" value="Отправить"> <input type="reset" value="Очистить"></p>
